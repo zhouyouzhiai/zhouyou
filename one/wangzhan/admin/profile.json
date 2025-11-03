@@ -1,0 +1,60 @@
+{
+    "id": 1,
+    "name": "我的名字",
+    "title": "前端开发工程师",
+    "avatar": "/static/img/avatar.jpg",
+    "bio": "热爱编程，专注于前端开发和用户体验设计。喜欢探索新技术，分享开发经验。",
+    "email": "2101438979@qq.com",
+    "phone": "138-0000-0000",
+    "github": "https://github.com/zhouyouzhiai",
+    "linkedin": "https://linkedin.com/in/zhouyouzhiai",
+    "twitter": "https://twitter.com/zhouyouzhiai",
+    "website": "https://mywebsite.com",
+    "location": "中国，北京",
+    "skills": [
+        {
+            "name": "HTML/CSS",
+            "level": 90
+        },
+        {
+            "name": "JavaScript",
+            "level": 85
+        },
+        {
+            "name": "React",
+            "level": 80
+        },
+        {
+            "name": "Vue.js",
+            "level": 75
+        },
+        {
+            "name": "Node.js",
+            "level": 70
+        }
+    ],
+    "experience": [
+        {
+            "company": "互联网公司",
+            "position": "前端开发工程师",
+            "duration": "2024-至今",
+            "description": "负责公司产品的前端开发工作，参与需求分析和技术选型。"
+        },
+        {
+            "company": "互联网公司",
+            "position": "前端开发实习生",
+            "duration": "2023-2024",
+            "description": "参与公司官网和内部系统的前端开发工作。"
+        }
+    ],
+    "education": [
+        {
+            "school": "武生院",
+            "degree": "本科",
+            "major": "计算机科学与技术",
+            "duration": "2022-2026"
+        }
+    ],
+    "created_at": "2025-01-01 00:00:00",
+    "updated_at": "2025-01-01 00:00:00"
+}

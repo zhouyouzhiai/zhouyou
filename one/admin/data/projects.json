@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "title": "博客",
+        "description": "记录美好日常",
+        "url": "./blog.html",
+        "image_url": "./static/img/tubiao/i1.png",
+        "category_id": 1,
+        "type": "site",
+        "tech_stack": ["HTML5", "CSS3", "JavaScript", "Node.js", "Express", "MongoDB"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 2,
+        "title": "云盘",
+        "description": "存储收集文件",
+        "url": "https://www.123912.com/s/kAoVVv-vDgKH",
+        "image_url": "./static/img/tubiao/i2.png",
+        "category_id": 1,
+        "type": "site",
+        "tech_stack": ["HTML5", "CSS3", "JavaScript", "Node.js", "Express", "AWS S3", "Multer"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 3,
+        "title": "相册",
+        "description": "珍藏美好回忆",
+        "url": "./photo.html",
+        "image_url": "./static/img/tubiao/i3.png",
+        "category_id": 1,
+        "type": "site",
+        "tech_stack": ["HTML5", "CSS3", "JavaScript", "Tailwind CSS", "Responsive Design"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 4,
+        "title": "留言板",
+        "description": "记录用户留言",
+        "url": "./lyb.html",
+        "image_url": "./static/img/tubiao/i4.png",
+        "category_id": 1,
+        "type": "site",
+        "tech_stack": ["HTML5", "CSS3", "JavaScript", "Tailwind CSS", "Responsive Design"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 5,
+        "title": "个人",
+        "description": "个人项目",
+        "url": "https://github.com/zhouyouzhiai/My-project",
+        "image_url": "./static/img/tubiao/i6.png",
+        "category_id": 2,
+        "type": "project",
+        "tech_stack": ["HTML5", "CSS3", "JavaScript", "Node.js", "JSON", "Responsive Design"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 6,
+        "title": "我的平台",
+        "description": "基于ECharts的数据可视化平台",
+        "url": "https://github.com/zyyo/data-visualization",
+        "image_url": "./static/img/tubiao/i5.png",
+        "category_id": 2,
+        "type": "project",
+        "tech_stack": ["Vue.js", "ECharts", "JavaScript", "HTML5", "CSS3", "Axios", "Element UI"],
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    }
+]

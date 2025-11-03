@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "title": "美丽的风景",
+        "description": "这是一张美丽的自然风景照片",
+        "image_path": "/static/uploads/photos/landscape/landscape1.jpg",
+    "thumbnail_path": "/static/uploads/photos/landscape/landscape1_thumb.jpg",
+        "category": "风景",
+        "tags": ["自然", "风景"],
+        "upload_date": "2025-01-01",
+        "file_size": "2.5MB",
+        "dimensions": "1920x1080",
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 2,
+        "title": "城市夜景",
+        "description": "繁华都市的夜晚景色",
+        "image_path": "/static/uploads/photos/city/city1.jpg",
+    "thumbnail_path": "/static/uploads/photos/city/city1_thumb.jpg",
+        "category": "城市",
+        "tags": ["城市", "夜景"],
+        "upload_date": "2025-01-02",
+        "file_size": "3.2MB",
+        "dimensions": "1920x1080",
+        "created_at": "2025-01-02 00:00:00",
+        "updated_at": "2025-01-02 00:00:00"
+    },
+    {
+        "id": 3,
+        "title": "日常生活",
+        "description": "记录生活中的美好瞬间",
+        "image_path": "/static/uploads/photos/life/life1.jpg",
+    "thumbnail_path": "/static/uploads/photos/life/life1_thumb.jpg",
+        "category": "生活",
+        "tags": ["生活", "日常"],
+        "upload_date": "2025-01-03",
+        "file_size": "1.8MB",
+        "dimensions": "1280x720",
+        "created_at": "2025-01-03 00:00:00",
+        "updated_at": "2025-01-03 00:00:00"
+    }
+]

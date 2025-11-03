@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台登录 - 个人网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/login-style.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- 主题切换按钮 -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <div class="login-illustration">
+            <img src="../wangzhan/static/img/touxiang/tx2.jpeg" alt="管理后台登录插图" onerror="this.src='https://picsum.photos/seed/admin/400/500.jpg'" />
+            <h2>欢迎回到管理后台</h2>
+            <p>请使用您的账号登录，管理您的个人网站内容</p>
+        </div>
+
+        <main class="login-card">
+            <header class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1>管理后台登录</h1>
+                <p>个人网站管理系统</p>
+            </header>
+
+            <div class="login-body">
+                <form id="login-form" class="login-form" aria-label="登录表单">
+                    <div class="form-group" id="username-group">
+                        <label for="username">用户名</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <i class="fas fa-user" aria-hidden="true"></i>
+                            </div>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="请输入用户名" required 
+                                   minlength="3" maxlength="20" autocomplete="username"
+                                   aria-describedby="username-error">
+                        </div>
+                        <!-- 错误提示将通过JS动态生成 -->
+                    </div>
+
+                    <div class="form-group" id="password-group">
+                        <label for="password">密码</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                            </div>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="请输入密码" required 
+                                   minlength="6" maxlength="20" autocomplete="current-password"
+                                   aria-describedby="password-error">
+                            <button type="button" class="toggle-password" id="toggle-password" 
+                                    aria-label="显示密码">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <!-- 错误提示将通过JS动态生成 -->
+                    </div>
+
+                    <a href="#" class="forgot-password">忘记密码？</a>
+
+                    <div class="custom-checkbox">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">记住我 30 天</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="login-btn" aria-label="登录管理后台">
+                        <span>登录</span>
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <footer class="login-footer">
+                    <p>默认账号: admin | 默认密码: admin123</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast 提示容器 -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- 引入AdminCommon类 -->
+    <script>
+        // 在引入admin-common.js之前，设置标志防止其初始化主题
+        window.ADMIN_LOGIN_PAGE = true;
+    </script>
+    <script src="js/admin-common.js"></script>
+    <!-- 主题切换代码 - 必须在login.js之前执行 -->
+    <script>
+        // 主题管理模块 - 使用模块模式封装
+        const ThemeManager = (function() {
+            // 私有变量和方法
+            const THEME_KEY = 'adminTheme';
+            const PROCESSING_DELAY = 300;
+            let isProcessing = false;
+            
+            // 应用主题
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+                
+                // 更新主题切换按钮图标
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    const icon = themeToggle.querySelector('i');
+                    if (icon) {
+                        icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+                    }
+                }
+                
+                // 保存主题到localStorage
+                localStorage.setItem(THEME_KEY, theme);
+            }
+            
+            // 切换主题
+            function toggleTheme() {
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            }
+            
+            // 初始化主题
+            function initTheme() {
+                const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+                applyTheme(savedTheme);
+            }
+            
+            // 添加事件监听器
+            function setupEventListeners() {
+                const themeToggle = document.getElementById('theme-toggle');
+                if (!themeToggle) return;
+                
+                // 添加主题切换按钮点击事件
+                themeToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 防止快速连续点击
+                    if (isProcessing) return;
+                    
+                    isProcessing = true;
+                    toggleTheme();
+                    
+                    // 重置处理标志
+                    setTimeout(() => {
+                        isProcessing = false;
+                    }, PROCESSING_DELAY);
+                }, true);
+                
+                // 监听存储变化，以便在多个标签页之间同步主题
+                window.addEventListener('storage', function(e) {
+                    if (e.key === THEME_KEY) {
+                        applyTheme(e.newValue || 'light');
+                    }
+                });
+            }
+            
+            // 公共API
+            return {
+                init: function() {
+                    // 立即初始化主题，不等待DOMContentLoaded
+                    initTheme();
+                    
+                    // DOM加载完成后添加事件监听器
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', setupEventListeners);
+                    } else {
+                        setupEventListeners();
+                    }
+                },
+                
+                // 公共方法，允许外部调用
+                setTheme: applyTheme,
+                getCurrentTheme: function() {
+                    return document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+                }
+            };
+        })();
+        
+        // 立即初始化主题
+        ThemeManager.init();
+    </script>
+    <script src="js/login.js"></script>
+</body>
+</html>

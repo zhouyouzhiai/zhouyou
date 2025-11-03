@@ -1,0 +1,2147 @@
+/* ========================================
+   加载和错误状态样式
+   ======================================== */
+
+/* 加载状态样式 */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--main_text_color);
+    font-size: 16px;
+}
+
+/* 无数据状态样式 */
+.no-data {
+    text-align: center;
+    padding: 20px;
+    color: var(--main_text_color);
+    font-size: 16px;
+}
+
+/* 错误状态样式 */
+.error {
+    text-align: center;
+    padding: 20px;
+    color: #ff4757;
+    font-size: 16px;
+}
+
+/* ========================================
+   字体定义部分
+   ======================================== */
+
+/* 中文字体定义 */
+@font-face {
+    font-family: "a";
+    /*中文字体*/
+    src: url();
+    font-display: swap;
+}
+
+/* 英文字体定义 - Ubuntu Regular */
+@font-face {
+    font-family: "b";
+    src: url(../fonts/Ubuntu-Regular.ttf);
+    font-display: swap;
+}
+
+/* 标题字体定义 - Pacifico Regular */
+@font-face {
+    font-family: "title";
+    /*英文字体*/
+    src: url(../fonts/Pacifico-Regular.ttf);
+    font-display: swap;
+}
+
+/* ========================================
+   全局样式重置
+   ======================================== */
+
+/* 全局样式重置：移除默认边距和内边距，设置盒模型和用户选择 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+/* 链接样式重置：移除所有默认样式和交互效果 */
+a:hover,
+a:link,
+a:visited,
+a:active,
+a:focus {
+    text-decoration: none;
+    outline: none;
+    border: none;
+    color: inherit;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/* ========================================
+   滚动条样式
+   ======================================== */
+
+/* 完全隐藏滚动条 */
+::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
+}
+
+/* 滚动条滑块样式 */
+::-webkit-scrollbar-thumb {
+    background: transparent !important;
+    display: none !important;
+}
+
+/* 滚动条轨道样式 */
+::-webkit-scrollbar-track {
+    background: transparent !important;
+    display: none !important;
+}
+
+/* 滚动条两端按钮样式 */
+::-webkit-scrollbar-button {
+    display: none !important;
+    background: transparent !important;
+}
+
+/* 滚动条角落样式 */
+::-webkit-scrollbar-corner {
+    background: transparent !important;
+    display: none !important;
+}
+
+/* 滚动条拖拽区域 */
+::-webkit-scrollbar-resizer {
+    display: none !important;
+    background: transparent !important;
+}
+
+/* Firefox 滚动条隐藏 */
+html, body, * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+/* IE 和 Edge 滚动条隐藏 */
+body, html {
+    -ms-overflow-style: none !important;
+}
+
+/* ========================================
+   深色模式主题变量定义
+   ======================================== */
+
+/* 深色模式下的CSS变量定义 */
+html[data-theme="Dark"] {
+    --main_text_color: #fff;
+    --gradient:linear-gradient(120deg, rgb(133, 62, 255), #f76cc6 30%, rgb(255, 255, 255) 60%);
+    --purple_text_color: #747bff;
+    --text_bg_color: rgb(26, 4, 48);
+    --item_bg_color: rgb(19, 20, 24);
+    --item_hover_color: rgb(19, 23, 27);
+    --item_left_title_color: rgb(255, 255, 255);
+    --item_left_text_color: rgb(142, 142, 142);
+    --footer_text_color: #646464;
+    --left_tag_item: linear-gradient(50deg, #1f2327, #000000);
+    --card_filter: 0px;
+    --back_filter: 0px;
+    --back_filter_color: #000000;
+    --fill:#ffffff;
+}
+
+/* ========================================
+   页面主体样式
+   ======================================== */
+
+/* 页面主体样式：设置全屏高度、字体、背景和过渡效果 */
+body {
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    font-family: "b",  "a", sans-serif;
+    background: var(--main_bg_color);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    transition: color 0.1s ease;
+    color: var(--main_text_color);
+}
+
+/* ========================================
+   页面加载动画样式
+   ======================================== */
+
+/* 页面加载动画容器：全屏覆盖，渐变背景 */
+#ZhouYou-loading {
+    background: radial-gradient(white, #d8eaff);
+    background-size: 100%;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 999999;
+    margin-top: 0px;
+    top: 0px;
+    pointer-events: none;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 加载动画中心圆圈：紫色圆形，缩放动画效果 */
+#ZhouYou-loading-center {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    border-radius: 50%;
+    background: #472eff;
+    animation: zoom 1s linear infinite;
+}
+
+/* 缩放动画关键帧：从0放大到1，同时透明度从1变为0 */
+@keyframes zoom {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   背景滤镜层样式
+   ======================================== */
+
+/* 背景滤镜层：固定定位，全屏覆盖，模糊效果 */
+.ZhouYou-filter {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: var(--back_filter_color);
+    backdrop-filter:  blur(var(--back_filter));
+    -webkit-backdrop-filter: blur(var(--back_filter));
+    z-index: -99999999;
+}
+
+/* ========================================
+   主容器布局样式
+   ======================================== */
+
+/* 主容器：最大宽度1150px，居中显示，弹性布局 */
+.ZhouYou-main {
+    width: 100%;
+    margin: 0 auto;
+    transition: transform 0.5s ease;
+    max-width: 1150px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+/* ========================================
+   左侧区域样式
+   ======================================== */
+
+/* 左侧区域：固定宽度，垂直滚动，粘性定位 */
+.ZhouYou-left {
+    overflow-y: scroll;
+    width: 230px;
+    height: 100vh;
+    display: flex;
+    padding: 0 15px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* 隐藏左侧区域的滚动条 */
+.ZhouYou-left::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================
+   Logo样式
+   ======================================== */
+
+/* Logo容器：圆形头像，固定宽高比 */
+.logo {
+    flex-shrink: 0;
+    width: 90%;
+    position: relative;
+    aspect-ratio: 1/1;
+    margin-top: 50px;
+    background-size: cover;
+    border-radius: 50%;
+}
+
+
+
+/* ========================================
+   左侧个人信息卡片样式
+   ======================================== */
+
+/* 左侧信息卡片容器：圆角背景，模糊效果 */
+.left-div {
+    flex-shrink: 0;
+    width: 100%;
+    border-radius: 13px;
+    margin-top: 15px;
+    padding: 20px;
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    background: var(--item_bg_color);
+}
+
+/* 左侧描述信息容器：垂直居中布局 */
+.left-des {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 左侧描述项：包含图标和文本的行 */
+.left-des-item {
+    display: flex;
+    align-items: center;
+    line-height: 20px;
+    font-size: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+/* 左侧描述项图标样式 */
+.left-des-item i,.left-des-item svg{
+    width: 16px;
+    height: 16px;
+    fill:var(--fill);
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* ========================================
+   左侧标签区域样式
+   ======================================== */
+
+/* 左侧标签容器：弹性布局，自动换行 */
+.left-tag {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 14px;
+}
+
+/* 左侧标签项：圆角背景，居中对齐 */
+.left-tag-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 28px;
+    margin: 0px 5px 5px 0;
+    padding: 10px;
+    font-size: 13px;
+    border-radius: 10px;
+    background: var(--left_tag_item);
+}
+
+/* ========================================
+   左侧时间线样式
+   ======================================== */
+
+/* 时间线容器：垂直滚动，吸附效果 */
+#line {
+    width: 100%;
+    height: 200px;
+    font-size: 13px;
+    padding-left: 8px;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+}
+
+/* 时间线列表项：左侧边框，相对定位 */
+#line li {
+    list-style: none;
+    position: relative;
+    padding: 15px 0px 0px 15px;
+    border-left: 2px solid #d5d5d5;
+    border-radius: 0;
+    scroll-snap-align: end;
+    color: var(--main_text_color);
+}
+
+/* 时间线焦点圆点：白色圆点，绝对定位 */
+.focus {
+    width: 8px;
+    height: 8px;
+    border-radius: 22px;
+    background-color: rgb(255 255 255);
+    border: 2px solid #fff;
+    position: absolute;
+    left: -5px;
+    top: 50%;
+}
+
+/* 第一个时间线项的焦点：绿色，呼吸动画 */
+#line li:first-child .focus:first-child {
+    background-color: #aaffcd;
+    animation: focus 1.8s ease infinite;
+}
+
+/* 隐藏时间线滚动条 */
+#line::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================
+   右侧内容区域样式
+   ======================================== */
+
+/* 右侧内容区域：自适应宽度，弹性布局 */
+.ZhouYou-right {
+    width: calc(100% - 230px);
+    display: flex;
+    padding: 20px;
+    position: relative;
+    padding-bottom: 50px;
+    flex-direction: column;
+}
+
+/* ========================================
+   右侧头部区域样式
+   ======================================== */
+
+/* 欢迎标题：大号字体，加粗显示 */
+.welcome {
+    font-size: 65px;
+    font-weight: 800;
+    margin: 20px 0;
+}
+
+/* 右侧Logo：圆形头像，固定宽高比 */
+.index-logo {
+    flex-shrink: 0;
+    width: 40%;
+    margin-top: 30px;
+    position: relative;
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    background-size: cover;
+    border-radius: 50%;
+    border: 0.5px solid #ffffff;
+}
+
+/* 描述文本：中等大小字体 */
+.description {
+    font-size: 20px;
+    margin-top: 7px;
+}
+
+/* ========================================
+   文本特效样式
+   ======================================== */
+
+/* 渐变文本：背景裁剪，动画效果 */
+.gradientText {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200%;
+    background-position: 0%;
+    font-family: "title";
+    animation: backgroundSizeAnimation 10s ease-in-out infinite;
+    background-image: var(--gradient);
+}
+
+/* 背景大小动画：从100%到0%再返回，创建渐变移动效果 */
+@keyframes backgroundSizeAnimation {
+    0% {
+        background-position: 100%;
+    }
+    25% {
+        background-position: 50%;
+    }
+    50% {
+        background-position: 0%;
+    }
+    75% {
+        background-position: 50%;
+    }
+    100% {
+        background-position: 100%;
+    }
+}
+
+/* 紫色文本：使用主题变量颜色，加粗显示 */
+.purpleText {
+    color: var(--purple_text_color);
+    font-weight: 800;
+}
+
+/* ========================================
+   文本背景样式
+   ======================================== */
+
+/* 文本背景：圆角背景，突出显示重要文本 */
+.textBackground {
+    font-weight: 800;
+    background: var(--text_bg_color);
+    border-radius: 5px;
+    font-size: 17px;
+    margin: 0 3px;
+    padding: 2px 4px;
+}
+
+/* ========================================
+   图标容器样式
+   ======================================== */
+
+/* 图标容器：水平滚动，包含多个图标项 */
+.iconContainer {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    overflow-x: scroll;
+    margin-top: 20px;
+    pointer-events: auto;
+}
+
+/* 隐藏图标容器的滚动条 */
+.iconContainer::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================
+   图标项样式
+   ======================================== */
+
+/* 图标项：圆角背景，包含图标和提示文本 */
+.iconItem {
+    width: 49px;
+    height: 43px;
+    box-sizing: border-box;
+    border-radius: 7px;
+    display: flex;
+    margin-left: 10px;
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    background: var(--item_bg_color);
+    align-items: center;
+    justify-content: center;
+    transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* 图标项内的图标样式 */
+.iconItem i,.iconItem svg{
+    width: 22px;
+    height: 22px;
+    fill:var(--fill);
+    font-size: 22px;
+    margin-right: 3px;
+}
+
+/* ========================================
+   开关样式
+   ======================================== */
+
+/* 开关容器：用于深色模式切换 */
+.switch {
+    width: 55px;
+    height: 43px;
+    box-sizing: border-box;
+    border-radius: 7px;
+    display: flex;
+    margin-left: 10px;
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    background: var(--item_bg_color);
+    align-items: center;
+    justify-content: center;
+    transition: width 1s ease, opacity 1s ease, transform 1s ease;
+    flex-shrink: 0;
+}
+
+/* 图标提示文本：默认隐藏，悬停时显示 */
+.iconTip {
+    white-space: nowrap;
+    display: none;
+}
+
+/* ========================================
+   图标项交互效果
+   ======================================== */
+
+/* 图标项悬停效果：宽度增加，上移，背景变化 */
+.iconItem:hover {
+    width: 95px;
+    transform: translateY(-2px);
+    background: var(--item_hover_color);
+}
+
+/* 图标项悬停时显示提示文本 */
+.iconItem:hover .iconTip {
+    display: block;
+}
+
+/* 开关悬停效果：背景变化 */
+.switch:hover {
+    width: 55px;
+    background: var(--item_hover_color);
+}
+
+/* ========================================
+   装饰性蛇形图像样式
+   ======================================== */
+
+/* 蛇形图像容器 */
+.tanChiShe {
+    width: 85%;
+}
+
+/* 蛇形图像：填充容器，保持宽高比 */
+.tanChiShe img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========================================
+   标题样式
+   ======================================== */
+
+/* 标题：包含图标和文本，悬停时上移 */
+.title {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 20px 0;
+    transition: transform 0.4s ease;
+}
+
+/* 标题内的图标样式 */
+.title i ,.title svg{
+    margin-right: 8px;
+    height: 26px;
+    width: 26px;
+    fill:var(--fill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 标题悬停效果：上移动画 */
+.title:hover {
+    transform: translateY(-5px);
+}
+
+/* ========================================
+   项目列表样式
+   ======================================== */
+
+/* 项目列表容器：弹性布局，自动换行 */
+.projectList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   项目项样式
+   ======================================== */
+
+/* 项目项：圆角背景，包含左右两部分 */
+.projectItem {
+    margin: 7px;
+    display: flex;
+    background-color: var(--item_bg_color);
+    border-radius: 8px;
+    padding: 15px;
+    height: 80px;
+    width: calc(25% - 15px);
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    transition: opacity 0.3s ease, background-color 0.3s ease, border 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 项目项样式（重复定义，可能是为了覆盖） */
+.projectItem {
+    display: flex;
+    background-color: var(--item_bg_color);
+    border-radius: 8px;
+    padding: 15px;
+    height: 80px;
+    width: calc(25% - 15px);
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    transition: opacity 0.5s ease, background-color 0.2s ease, border 0.2s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 项目卡片加载动画 */
+.projectItem {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+/* 项目卡片交错加载动画 */
+.projectItem:nth-child(1) { animation-delay: 0.1s; }
+.projectItem:nth-child(2) { animation-delay: 0.2s; }
+.projectItem:nth-child(3) { animation-delay: 0.3s; }
+.projectItem:nth-child(4) { animation-delay: 0.4s; }
+.projectItem:nth-child(5) { animation-delay: 0.5s; }
+.projectItem:nth-child(6) { animation-delay: 0.6s; }
+.projectItem:nth-child(7) { animation-delay: 0.7s; }
+.projectItem:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 项目卡片波纹效果 */
+.projectItem::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    pointer-events: none;
+}
+
+.projectItem.ripple::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* 波纹元素样式 */
+.projectItem .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   项目项交互效果
+   ======================================== */
+
+/* 项目项悬停效果：阴影和上移 */
+.projectItem:hover {
+    box-shadow: 0 8px 16px -4px #2c2d300c;
+    transform: translateY(-2px);
+}
+
+/* 项目项按下效果：缩小和背景变化 */
+.projectItem.pressed {
+    transform: scale(0.9);
+    background-color: var(--item_hover_color);
+}
+
+/* 项目项悬停时左侧部分占满宽度 */
+.projectItem:hover .projectItemLeft {
+    width: 100%;
+}
+
+/* 项目项悬停时右侧部分隐藏 */
+.projectItem:hover .projectItemRight {
+    width: 0%;
+}
+
+/* ========================================
+   项目项内容样式
+   ======================================== */
+
+/* 项目项悬停时右侧图片旋转效果 */
+.projectItem:hover .projectItemRight img {
+    transform: rotate(40deg);
+}
+
+/* 项目项左侧描述文本样式 */
+.projectItemLeft p {
+    font-size: 14px;
+    margin: 0;
+    color: var(--item_left_text_color);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 项目项左侧容器样式 */
+.projectItemLeft {
+    transition: width 0.4s ease;
+    height: 100%;
+    width: 80%;
+}
+
+/* 项目项右侧容器样式 */
+.projectItemRight {
+    overflow: hidden;
+    transition: width 0.4s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+}
+
+/* 项目项右侧图片样式 */
+.projectItemRight img {
+    height: 39px;
+    width: 39px;
+}
+
+/* ========================================
+   技能图谱样式
+   ======================================== */
+
+/* 技能图谱容器 */
+.skill {
+    padding: 25px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 技能图谱图片样式 */
+.skill img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* 技能图谱图片加载完成后的动画 */
+.skill img.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 技能图谱容器悬停效果 */
+.skill:hover img {
+    transform: scale(1.02);
+    transition: transform 0.5s ease;
+}
+
+/* 技能图谱加载动画 */
+.skill.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: skillShimmer 1.5s infinite;
+}
+
+@keyframes skillShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* 技能图谱容器悬停时的光晕效果 */
+.skill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.skill:hover::before {
+    opacity: 1;
+}
+
+/* 技能图谱点击波纹效果 */
+.skill.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    animation: skillRipple 0.6s ease-out;
+}
+
+@keyframes skillRipple {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* 移动端技能图谱容器默认隐藏 */
+.skill #skillWap {
+    display: none;
+}
+
+/* ========================================
+   公共动画样式
+   ======================================== */
+
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 向上滑动动画 */
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 模态框淡入动画 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+   模态框基础样式
+   ======================================== */
+
+/* 模态框容器：全屏覆盖，默认隐藏 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* 模态框激活状态：显示 */
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 模态框内容容器 */
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    background: var(--card_bg_color);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+/* 模态框关闭按钮 */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--main_text_color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+/* 关闭按钮悬停效果 */
+.close-modal:hover {
+    background-color: var(--hover_bg_color);
+    transform: rotate(90deg);
+}
+
+/* ========================================
+   导航栏滚动效果
+   ======================================== */
+
+/* 导航栏滚动状态样式 */
+.nav-scrolled {
+    background-color: var(--card_bg_color);
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* ========================================
+   页脚样式
+   ======================================== */
+
+/* 页脚：固定在底部，半透明背景 */
+footer {
+    position: absolute;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    backdrop-filter: blur(var(--card_filter));
+    -webkit-backdrop-filter: blur(var(--card_filter));
+    background: var(--item_bg_color);
+    color: var(--footer_text_color);
+    font-size: 13px;
+    bottom: 0;
+}
+
+/* ========================================
+   响应式设计：大屏幕设备
+   ======================================== */
+
+/* 大屏幕设备隐藏首页logo */
+@media (min-width: 800px) {
+    .index-logo {
+        display: none;
+    }
+}
+
+/* ========================================
+   响应式设计：中等屏幕设备
+   ======================================== */
+
+/* 中等屏幕设备调整项目项宽度 */
+@media (max-width: 1150px) {
+    .a {
+        width: calc(50% - 20px);
+    }
+    .projectItem {
+        margin: 10px;
+    }
+    .b {
+        width: calc(50% - 20px);
+    }
+}
+
+/* ========================================
+   响应式设计：小屏幕设备
+   ======================================== */
+
+/* 小屏幕设备调整布局和样式 */
+@media (max-width: 800px) {
+    /* 隐藏左侧个人信息区域 */
+    .ZhouYou-left {
+        display: none;
+    }
+
+    /* 隐藏项目项右侧图片区域 */
+    .a .projectItemRight {
+        display: none;
+    }
+
+    .a .projectItemRight img {
+        display: none;
+    }
+
+    /* 项目项左侧占满宽度 */
+    .a .projectItemLeft {
+        width: 100%;
+    }
+
+    /* 调整项目项宽度和边距 */
+    .a {
+        width: calc(50% - 18px);
+        margin: 9px;
+    }
+
+    /* 调整技能图谱项宽度和高度 */
+    .b {
+        height: 110px;
+        margin: 8px 15px;
+        width: calc(100% - 30px);
+    }
+
+    /* 右侧区域占满宽度 */
+    .ZhouYou-right {
+        width: 100%;
+    }
+
+    /* 装饰性图像占满宽度 */
+    .tanChiShe {
+        width: 100%;
+    }
+
+    /* 调整描述文本大小 */
+    .description {
+        font-size: 4vw;
+    }
+
+    /* 调整欢迎文本大小和边距 */
+    .welcome {
+        font-size: 10vw;
+        margin: 2vw 0;
+    }
+    
+    /* 调整图标容器上边距 */
+    .iconContainer {
+        margin-top: 4vw;
+    }
+    
+    /* 调整项目项内边距 */
+    .projectItem {
+        padding: 15px;
+    }
+    
+    /* 调整项目项描述文本大小 */
+    .projectItemLeft p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    /* 调整项目项标题大小 */
+    .projectItemLeft h1 {
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.3;
+    }
+
+    /* 调整项目项悬停时标题大小 */
+    .projectItem:hover h1 {
+        font-size: 22px;
+    }
+
+    /* 显示移动端技能图谱 */
+    .skill #skillWap {
+        display: block;
+    }
+
+    /* 隐藏PC端技能图谱 */
+    .skill #skillPc {
+        display: none;
+    }
+    
+    /* 调整技能项文本大小 */
+    .skill .b h1 {
+        font-size: 14px;
+    }
+    
+    /* 调整技能项描述文本大小 */
+    .skill .b p {
+        font-size: 12px;
+    }
+    
+    /* 调整技能项图标大小 */
+    .skill .b i {
+        font-size: 24px;
+    }
+    
+    /* 调整技能项进度条高度 */
+    .skill .b .progress-bar {
+        height: 6px;
+    }
+    
+    /* 调整社交链接容器 */
+    .iconContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    /* 调整社交链接图标大小 */
+    .iconContainer a {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    /* 调整深色模式切换开关位置 */
+    .onoffswitch {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+}
+
+/* 超小屏幕设备调整布局和样式 */
+@media (max-width: 480px) {
+    /* 调整项目项宽度为单列 */
+    .a {
+        width: calc(100% - 30px);
+        margin: 15px;
+    }
+    
+    /* 调整项目项内边距 */
+    .projectItem {
+        padding: 15px;
+    }
+    
+    /* 调整项目项标题大小 */
+    .projectItemLeft h1 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    /* 调整项目项描述文本大小 */
+    .projectItemLeft p {
+        font-size: 13px;
+    }
+    
+    /* 调整标题图标大小 */
+    .title i, .title svg {
+        height: 18px;
+        width: 18px;
+    }
+    
+    /* 调整标题字体大小 */
+    .title {
+        font-size: 18px;
+        margin: 15px 0 10px 0;
+    }
+    
+    /* 调整技能项高度 */
+    .b {
+        height: 90px;
+        margin: 6px 15px;
+    }
+    
+    /* 调整技能项文本大小 */
+    .skill .b h1 {
+        font-size: 13px;
+    }
+    
+    /* 调整技能项描述文本大小 */
+    .skill .b p {
+        font-size: 11px;
+    }
+    
+    /* 调整技能项图标大小 */
+    .skill .b i {
+        font-size: 20px;
+    }
+    
+    /* 调整社交链接图标大小 */
+    .iconContainer a {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    /* 调整深色模式切换开关位置 */
+    .onoffswitch {
+        top: 15px;
+        right: 15px;
+    }
+}
+
+/* 超小屏幕设备调整布局和样式 */
+@media (max-width: 480px) {
+    /* 调整项目项宽度为单列 */
+    .a {
+        width: calc(100% - 30px);
+        margin: 15px;
+    }
+    
+    /* 调整项目项内边距 */
+    .projectItem {
+        padding: 15px;
+    }
+    
+    /* 调整项目项标题大小 */
+    .projectItemLeft h1 {
+        font-size: 16px;
+    }
+    
+    /* 调整项目项描述文本大小 */
+    .projectItemLeft p {
+        font-size: 13px;
+    }
+    
+    /* 调整标题图标大小 */
+    .title i, .title svg {
+        height: 18px;
+        width: 18px;
+    }
+    
+    /* 调整标题字体大小 */
+    .title {
+        font-size: 18px;
+        margin: 15px 0 10px 0;
+    }
+    
+    /* 调整技能项高度 */
+    .b {
+        height: 90px;
+        margin: 6px 15px;
+    }
+    
+    /* 调整技能项文本大小 */
+    .skill .b h1 {
+        font-size: 13px;
+    }
+    
+    /* 调整技能项描述文本大小 */
+    .skill .b p {
+        font-size: 11px;
+    }
+    
+    /* 调整技能项图标大小 */
+    .skill .b i {
+        font-size: 20px;
+    }
+}
+
+/* 超小屏幕设备调整布局和样式 */
+@media (max-width: 480px) {
+    /* 调整项目项宽度为单列 */
+    .a {
+        width: calc(100% - 30px);
+        margin: 15px;
+    }
+    
+    /* 调整项目项内边距 */
+    .projectItem {
+        padding: 15px;
+    }
+    
+    /* 调整项目项标题大小 */
+    .projectItemLeft h1 {
+        font-size: 16px;
+    }
+    
+    /* 调整项目项描述文本大小 */
+    .projectItemLeft p {
+        font-size: 13px;
+    }
+    
+    /* 调整标题图标大小 */
+    .title i, .title svg {
+        height: 18px;
+        width: 18px;
+    }
+    
+    /* 调整标题字体大小 */
+    .title {
+        font-size: 18px;
+        margin: 15px 0 10px 0;
+    }
+}
+
+/* ========================================
+   图片查看器样式
+   ======================================== */
+
+/* 图片查看器容器：全屏覆盖，默认隐藏 */
+.tc {
+    position: fixed;
+    display: flex;
+    visibility: hidden;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(20, 20, 20, 0.5);
+    z-index: 99999;
+    align-items: center;
+    top: 0;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* 图片查看器主容器 */
+.tc-main {
+    z-index: 100000;
+    width: 80%;
+    max-width: 400px;
+    min-height: 400px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    display: flex;
+    transition: transform 0.2s linear;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transform: translateY(30%) scale(0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 图片查看器内图片样式 */
+.tc-img {
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 图片查看器激活状态：显示 */
+.tc.active {
+    visibility: visible;
+}
+
+/* 图片查看器主容器激活状态：显示并居中 */
+.tc-main.active {
+    transform: translateY(0) scale(1);
+}
+
+/* ========================================
+   开关组件样式
+   ======================================== */
+
+/* 开关容器 */
+.onoffswitch {
+    position: relative;
+    width: 38px;
+    height: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* 开关复选框：隐藏 */
+.onoffswitch-checkbox {
+    display: none;
+}
+
+/* 开关标签：可点击区域 */
+.onoffswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    height: 100%;
+    border-radius: 50px;
+}
+
+/* 开关内部：包含两种状态 */
+.onoffswitch-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200%;
+    height: 100%;
+    margin-left: -100%;
+    transition: margin 0.2s ease-in 0s;
+}
+
+/* 开关内部状态：开启和关闭 */
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    width: 50%;
+    height: 100%;
+    padding: 0;
+    font-size: 12px;
+    color: white;
+    font-family: Trebuchet, Arial, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+/* 开关关闭状态样式 */
+.onoffswitch-inner:before {
+    content: "";
+    background-color: rgb(110 110 110 / 50%);
+    color: #FFFFFF;
+    text-align: left;
+}
+
+/* 开关开启状态样式 */
+.onoffswitch-inner:after {
+    content: "";
+    background-color: #272727;
+    color: #FAFAFA;
+    text-align: right;
+}
+
+/* 开关滑块 */
+.onoffswitch-switch {
+    display: block;
+    height: 70%;
+    aspect-ratio: 1/1;
+    background: #FFFFFF;
+    position: absolute;
+    top: 12.5%;
+    bottom: 12.5%;
+    right: 5px;
+    border-radius: 20px;
+    transition: right 0.2s ease-in 0s;
+}
+
+/* 开关开启状态：内部移动 */
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+/* 开关开启状态：滑块移动 */
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 50%;
+}
+
+/* ========================================
+   项目详情弹窗样式
+   ======================================== */
+
+/* 项目详情弹窗容器：全屏覆盖，默认隐藏 */
+.project-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* 项目详情弹窗激活状态：显示 */
+.project-detail-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* 弹窗遮罩层：半透明背景 */
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* 弹窗内容容器 */
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    background: var(--card_bg_color);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+/* 弹窗激活状态：内容容器缩放 */
+.project-detail-modal.active .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* 弹窗头部 */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border_color);
+    animation: slideDown 0.4s ease forwards;
+}
+
+/* 弹窗标题 */
+.modal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--main_text_color);
+    font-style: italic;
+}
+
+/* 弹窗关闭按钮 */
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--main_text_color);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* 弹窗关闭按钮悬停效果 */
+.modal-close:hover {
+    background-color: var(--hover_bg_color);
+    transform: rotate(90deg);
+}
+
+/* 弹窗主体内容 */
+.modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+}
+
+/* 弹窗内容区域动画 */
+.project-description,
+.project-technologies,
+.project-features,
+.project-challenges,
+.project-outcomes,
+.project-links {
+    animation: slideUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.project-description { animation-delay: 0.3s; }
+.project-technologies { animation-delay: 0.4s; }
+.project-features { animation-delay: 0.5s; }
+.project-challenges { animation-delay: 0.6s; }
+.project-outcomes { animation-delay: 0.7s; }
+.project-links { animation-delay: 0.8s; }
+
+/* 动画定义 */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 项目图片画廊 */
+.project-gallery {
+    width: 100%;
+}
+
+/* 画廊容器 */
+.gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 主图片区域 */
+.gallery-main {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--hover_bg_color);
+}
+
+/* 主图片 */
+.gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* 主图片悬停效果 */
+.gallery-main img:hover {
+    transform: scale(1.05);
+}
+
+/* 缩略图容器 */
+.gallery-thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+/* 缩略图 */
+.gallery-thumbnails img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* 缩略图悬停和激活效果 */
+.gallery-thumbnails img:hover,
+.gallery-thumbnails img.active {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* 项目信息区域 */
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 项目描述 */
+.project-description h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: var(--main_text_color);
+}
+
+.project-description p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--second_text_color);
+}
+
+/* 项目元信息 */
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 元信息项 */
+.meta-item {
+    flex: 1;
+    min-width: 150px;
+}
+
+.meta-item h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: var(--main_text_color);
+}
+
+/* 状态徽章 */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: var(--left_tag_item);
+    color: var(--main_text_color);
+}
+
+/* 技术栈区域 */
+.project-technologies h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: var(--main_text_color);
+}
+
+/* 技术标签容器 */
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 技术标签 */
+.tech-tags span {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 14px;
+    background-color: var(--left_tag_item);
+    color: var(--main_text_color);
+}
+
+/* 项目功能特点 */
+.project-features h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: var(--main_text_color);
+}
+
+/* 功能列表 */
+.project-features ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--second_text_color);
+}
+
+.project-features li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* 项目挑战与成果 */
+.project-challenges h3,
+.project-outcomes h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: var(--main_text_color);
+}
+
+.project-challenges p,
+.project-outcomes p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--second_text_color);
+}
+
+/* 项目链接 */
+.project-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 按钮悬停效果 */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 主要按钮 */
+.btn-primary {
+    background-color: var(--purpleText);
+    color: white;
+}
+
+/* 次要按钮 */
+.btn-secondary {
+    background-color: var(--left_tag_item);
+    color: var(--main_text_color);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    /* 弹窗内容容器 */
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+        border-radius: 10px;
+    }
+    
+    /* 弹窗头部和主体 */
+    .modal-header,
+    .modal-body {
+        padding: 15px;
+    }
+    
+    /* 弹窗标题 */
+    .modal-title {
+        font-size: 18px;
+    }
+    
+    /* 弹窗关闭按钮 */
+    .modal-close {
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+    }
+    
+    /* 主图片区域 */
+    .gallery-main {
+        height: 200px;
+    }
+    
+    /* 缩略图 */
+    .gallery-thumbnails img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* 项目元信息 */
+    .project-meta {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    /* 项目链接 */
+    .project-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* 按钮 */
+    .btn {
+        justify-content: center;
+        padding: 12px 15px;
+    }
+    
+    /* 项目信息区域标题 */
+    .project-description h3,
+    .project-technologies h3,
+    .project-features h3,
+    .project-challenges h3,
+    .project-outcomes h3 {
+        font-size: 18px;
+    }
+    
+    /* 技术标签 */
+    .tech-tags span {
+        font-size: 13px;
+        padding: 4px 10px;
+    }
+}
+
+/* 超小屏幕设备调整弹窗样式 */
+@media (max-width: 480px) {
+    /* 弹窗内容容器 */
+    .modal-content {
+        width: 98%;
+        max-height: 98vh;
+    }
+    
+    /* 弹窗头部和主体 */
+    .modal-header,
+    .modal-body {
+        padding: 12px;
+    }
+    
+    /* 弹窗标题 */
+    .modal-title {
+        font-size: 16px;
+    }
+    
+    /* 弹窗关闭按钮 */
+    .modal-close {
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+    }
+    
+    /* 主图片区域 */
+    .gallery-main {
+        height: 180px;
+    }
+    
+    /* 缩略图 */
+    .gallery-thumbnails img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    /* 项目链接 */
+    .project-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* 按钮 */
+    .btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    /* 项目信息区域标题 */
+    .project-description h3,
+    .project-technologies h3,
+    .project-features h3,
+    .project-challenges h3,
+    .project-outcomes h3 {
+        font-size: 16px;
+    }
+    
+    /* 项目描述文本 */
+    .project-description p,
+    .project-challenges p,
+    .project-outcomes p {
+        font-size: 14px;
+    }
+    
+    /* 功能列表 */
+    .project-features li {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+}
+
+/* ========================================
+   懒加载CSS动画样式
+   ======================================== */
+
+/* 懒加载图片容器样式 */
+.lazy-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 懒加载动画容器 */
+.lazy-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+/* 懒加载动画圆圈 */
+.lazy-spinner::before {
+    content: "";
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--purpleText);
+    animation: lazy-spin 1s ease-in-out infinite;
+}
+
+/* 懒加载旋转动画 */
+@keyframes lazy-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 懒加载完成状态 */
+.lazy-loaded {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* 懒加载错误状态 */
+.lazy-error {
+    position: relative;
+}
+
+/* 懒加载错误提示 */
+.lazy-error::after {
+    content: "图片加载失败";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff4757;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 4px;
+    z-index: 2;
+}
+

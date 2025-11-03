@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "name": "GitHub",
+        "url": "https://github.com/zhouyouzhiai",
+        "icon_class": "fab fa-github",
+        "color": "#333333",
+        "sort_order": 1,
+        "is_enabled": 1,
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 2,
+        "name": "捐赠",
+        "url": "./static/img/wxskm.jpg",
+        "icon_class": "fas fa-donate",
+        "color": "#FF5722",
+        "sort_order": 2,
+        "is_enabled": 1,
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 3,
+        "name": "Twitter",
+        "url": "https://x.com/zhouyouzhiai",
+        "icon_class": "fab fa-twitter",
+        "color": "#1DA1F2",
+        "sort_order": 3,
+        "is_enabled": 1,
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    },
+    {
+        "id": 4,
+        "name": "Email",
+        "url": "mailto:2101438979@qq.com",
+        "icon_class": "fas fa-envelope",
+        "color": "#EA4335",
+        "sort_order": 4,
+        "is_enabled": 1,
+        "created_at": "2025-01-01 00:00:00",
+        "updated_at": "2025-01-01 00:00:00"
+    }
+]

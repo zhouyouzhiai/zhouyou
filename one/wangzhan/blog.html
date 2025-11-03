@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZhouYou | 技术与生活</title>
+    <meta name="description" content="记录开源项目、技术实践与生活点滴">
+    <meta name="keywords" content="ZhouYou,开源,技术,博客,生活">
+    <link rel="icon" href="./static/img/favicon.ico" type="image/x-icon">
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义主题 -->
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                primary: '#3B82F6',
+                secondary: '#10B981',
+                accent: '#8B5CF6',
+                dark: {
+                  100: '#F3F4F6',
+                  200: '#E5E7EB',
+                  700: '#374151',
+                  800: '#1F2937',
+                  900: '#111827',
+                }
+              },
+              fontFamily: {
+                sans: ['Inter', 'system-ui', 'sans-serif'],
+                title: ['"Noto Serif SC"', 'serif'],
+              },
+              transitionProperty: {
+                'height': 'height',
+                'spacing': 'margin, padding',
+              }
+            },
+          }
+        }
+    </script>
+    
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+          .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          }
+          .text-shadow-lg {
+            text-shadow: 0 4px 8px rgba(0,0,0,0.25);
+          }
+          .backdrop-blur {
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+          }
+          .card-hover {
+            transition: all 0.3s ease;
+          }
+          .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          }
+        }
+    </style>
+    
+    <style>
+        /* 全局滚动条隐藏 */
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        
+        *::-webkit-scrollbar {
+            width: 0 !important;
+            height: 0 !important;
+            display: none !important;
+            background: transparent !important;
+            visibility: hidden !important;
+        }
+        
+        *::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-button,
+        *::-webkit-scrollbar-corner,
+        *::-webkit-scrollbar-resizer {
+            background: transparent !important;
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* 全局动画定义 - 已移至style.css */
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 背景轮播动画 */
+        .bg-slider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        .bg-slide.active {
+            opacity: 1;
+        }
+        
+        /* 渐变文字效果 */
+        .gradient-text {
+            background: linear-gradient(120deg, #3B82F6, #8B5CF6, #10B981);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: backgroundShift 8s ease infinite;
+        }
+        
+        /* 导航栏滚动效果 - 已移至style.css */
+        
+        /* 分类按钮动画效果 */
+        .category-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .category-item:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .category-item.active {
+            animation: pulse 2s infinite;
+        }
+        
+        /* 编辑和发布文章样式 */
+        .blog-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(-5px);
+            z-index: 10;
+            background: white;
+            border-radius: 6px;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark .blog-card-actions {
+            background: #1F2937;
+        }
+        
+        .blog-card:hover .blog-card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .blog-btn {
+            padding: 0.3rem 0.6rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            gap: 0.25rem;
+        }
+        
+        .btn-text {
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            margin-right: 0.5rem;
+        }
+        
+        .dark .edit-btn {
+            background: linear-gradient(135deg, #388E3C, #2E7D32);
+        }
+        
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+        }
+        
+        .delete-btn {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+        
+        .dark .delete-btn {
+            background: linear-gradient(135deg, #D32F2F, #B71C1C);
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.3);
+        }
+        
+        /* 发布文章按钮样式 */
+        #publish-blog-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #publish-blog-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        #publish-blog-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .dark .form-group label {
+            color: #D1D5DB;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            background-color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .dark .form-control {
+            background-color: #374151;
+            border-color: #4B5563;
+            color: #F9FAFB;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-actions button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        /* 草稿保存提示 */
+        .draft-saved {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3B82F6;
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .draft-saved.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem;
+            border-radius: 6px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .close-modal, .close-publish-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            background: none;
+            border: none;
+            padding: 0;
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dark .modal-content {
+            background: #1f2937;
+            color: #f9fafb;
+        }
+        
+        .dark .close-modal, .dark .close-publish-modal {
+            color: #f9fafb;
+        }
+        
+        /* 评论样式 */
+        .comment {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .comment:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-form textarea {
+            transition: all 0.3s ease;
+        }
+        
+        .comment-form textarea:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* 开源项目与博客整合样式 */
+        .project-related {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #E5E7EB;
+        }
+        
+        .project-related h4 {
+            font-size: 0.9rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-projects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .related-project {
+            font-size: 0.8rem;
+            background-color: #F3F4F6;
+            color: #4B5563;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            transition: all 0.2s ease;
+        }
+        
+        .related-project:hover {
+            background-color: #3B82F6;
+            color: white;
+        }
+        
+        /* 开源项目详情页样式 */
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            background-color: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #3B82F6;
+        }
+        
+        .project-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3B82F6;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+        
+        .project-readme {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .project-readme {
+            background-color: rgba(31, 41, 55, 0.8);
+        }
+        
+        /* 确保页面内容不被固定导航栏遮挡 */
+        #content, [id] {
+            scroll-margin-top: 80px;
+        }
+        
+        /* 标签样式 */
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: #EFF6FF;
+            color: #2563EB;
+            transition: all 0.2s ease;
+        }
+        
+        .tag:hover {
+            background-color: #DBEAFE;
+            transform: translateY(-2px);
+        }
+        
+        textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 dark:text-gray-200 bg-white dark:bg-dark-900 transition-colors duration-300">
+    <!-- 背景轮换容器 -->
+    <div class="bg-slider">
+        <div class="bg-slide active" style="background-image: url('./static/img/background/background.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background1.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background2.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background3.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background4.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background5.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background6.jpg');"></div>
+        <div class="bg-slide" style="background-image: url('./static/img/background/background7.jpg');"></div>
+    </div>
+
+    <!-- 内容包装器 -->
+    <div class="content-wrapper min-h-screen">
+        <!-- 导航栏 -->
+        <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-3">
+            <nav class="container mx-auto px-4 flex items-center justify-between bg-white/80 dark:bg-dark-900/80 rounded-b-xl shadow-sm transition-all duration-300">
+                <!-- Logo区域 -->
+                <a href="./index.html" class="flex items-center gap-2 text-xl font-bold gradient-text group relative">
+                    <span>ZhouYou</span>
+                    <i class="fas fa-home home-icon opacity-0 w-0 transition-all duration-300 absolute -top-8 left-0 text-sm bg-primary/10 text-primary px-2 py-1 rounded-md"></i>
+                </a>
+                
+                <!-- 导航链接 - 桌面端 -->
+                <div class="hidden md:flex items-center space-x-1 bg-white/90 dark:bg-dark-800/90 px-3 py-2 rounded-full shadow-sm">
+                    <div class="relative group">
+                        <a href="#" class="px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors flex items-center gap-1 text-gray-800 dark:text-gray-100">
+                            页面 <i class="fas fa-angle-down text-xs"></i>
+                        </a>
+                        <!-- 下拉菜单 -->
+                        <div class="absolute left-0 mt-2 w-48 bg-white dark:bg-dark-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top scale-95 group-hover:scale-100">
+                            <a href="index.html" class="block px-4 py-2 hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">关于我</a>
+                            <a href="blog.html" class="block px-4 py-2 bg-primary/10 transition-colors text-primary font-medium">博客</a>
+                            <a href="photo.html" class="block px-4 py-2 hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">相册</a>
+                            <a href="projects.html" class="block px-4 py-2 hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">开源项目</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">友链</a>
+                            <a href="lyb.html" class="block px-4 py-2 hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">留言</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧功能按钮 -->
+                <div class="flex items-center gap-3">
+                    <button id="theme-toggle" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                        <i class="fas fa-sun dark:hidden text-yellow-500"></i>
+                        <i class="fas fa-moon hidden dark:inline text-blue-300"></i>
+                    </button>
+                    <button id="search-toggle" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                        <i class="fas fa-search text-gray-600 dark:text-gray-300"></i>
+                    </button>
+                    <a href="../admin/login.html" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors" aria-label="管理员登录">
+                        <i class="far fa-user text-gray-600 dark:text-gray-300"></i>
+                    </a>
+                    <!-- 移动端菜单按钮 -->
+                    <button id="mobile-menu-btn" class="md:hidden w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                        <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- 移动端菜单 -->
+            <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-dark-800 absolute top-full left-0 right-0 shadow-lg rounded-b-xl mt-1 p-4 animate-fadeIn">
+                <div class="flex flex-col space-y-3">
+                    <div>
+                        <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors text-gray-800 dark:text-gray-100">
+                            <span>页面</span>
+                            <i class="fas fa-angle-down text-xs"></i>
+                        </a>
+                        <div class="pl-4 mt-1 border-l-2 border-gray-200 dark:border-dark-700 space-y-2">
+                            <a href="index.html" class="block px-3 py-1.5 rounded hover:bg-primary/10 transition-colors">关于我</a>
+                            <a href="blog.html" class="block px-3 py-1.5 rounded bg-primary/10 transition-colors text-primary font-medium">博客</a>
+                            <a href="photo.html" class="block px-3 py-1.5 rounded hover:bg-primary/10 transition-colors">相册</a>
+                            <a href="projects.html" class="block px-3 py-1.5 rounded hover:bg-primary/10 transition-colors">开源项目</a>
+                            <a href="#" class="block px-3 py-1.5 rounded hover:bg-primary/10 transition-colors">友链</a>
+                            <a href="lyb.html" class="block px-3 py-1.5 rounded hover:bg-primary/10 transition-colors">留言</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 搜索弹出层 -->
+            <div id="search-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300">
+                <div class="flex items-start justify-center pt-20">
+                    <div class="bg-white dark:bg-dark-800 rounded-lg shadow-xl p-4 w-full max-w-lg mx-4 transform scale-95 transition-transform duration-300">
+                        <div class="flex items-center border-b border-gray-200 dark:border-dark-700 pb-2 relative">
+                            <input type="text" id="searchInput" placeholder="搜索文章、项目或标签..." class="flex-1 px-4 py-2 bg-transparent border-none outline-none text-gray-800 dark:text-gray-200 text-lg">
+                            <button id="search-close" class="ml-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                            <!-- 搜索建议下拉框 -->
+                            <div id="search-suggestions" class="absolute top-full left-0 right-0 bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-700 rounded-b-lg shadow-lg z-10 hidden">
+                                <!-- 搜索建议将在这里动态显示 -->
+                            </div>
+                        </div>
+                        <div id="search-results" class="mt-4 max-h-96 overflow-y-auto">
+                            <!-- 搜索结果将在这里动态显示 -->
+                            <div class="text-gray-500 dark:text-gray-400 text-center py-6">
+                                输入关键词开始搜索
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主视觉区域 -->
+        <section class="relative h-screen overflow-hidden flex items-center justify-center">
+            <!-- 个人信息区域 -->
+            <div class="relative z-10 text-center px-4 animate-[fadeIn_1s_ease-out] bg-black/20 backdrop-blur-sm rounded-2xl p-8 max-w-3xl mx-auto">
+                <!-- 头像 -->
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/80 shadow-xl mb-6 mx-auto">
+                    <img src="./static/img/logo.png" alt="ZhouYou的头像" class="w-full h-full object-cover">
+                </div>
+                
+                <!-- 名称与简介 -->
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white text-shadow-lg mb-3">ZhouYou</h1>
+                <p class="text-[clamp(1rem,2vw,1.25rem)] text-white/90 max-w-2xl text-shadow mx-auto mb-8">
+                    分享技术心得与创意灵感<br>
+                    探索数字世界的无限可能
+                </p>
+                
+                <!-- 社交链接 -->
+                <div class="flex gap-4 justify-center mt-6" id="social-icons">
+                    <!-- 图标将通过JavaScript动态加载 -->
+                </div>
+                
+                <!-- 向下滚动指示器 -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <a href="#content" class="text-white/80 hover:text-white transition-colors">
+                        <i class="fas fa-chevron-down text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主要内容区域 -->
+        <section id="content" class="container mx-auto px-4 py-16 bg-white/90 dark:bg-dark-900/90 backdrop-blur-sm rounded-t-3xl mt-[-5rem] relative z-20 shadow-2xl">
+            <!-- 发布文章按钮 -->
+            <div class="mb-8 text-center">
+                <button id="publish-blog-btn" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-blue-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-plus-circle"></i>
+                    发布新文章
+                </button>
+            </div>
+            
+            <!-- 导航分类区 -->
+            <div class="mb-12">
+                <div class="nav-container bg-white/80 dark:bg-dark-800/80 rounded-xl p-6 shadow-md backdrop-blur">
+                    <div class="main-nav flex flex-col gap-6">
+                        <!-- 分类导航 -->
+                        <div class="nav-section" id="categories">
+                            <h3 class="nav-title text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">分类</h3>
+                            <div class="category-nav flex flex-wrap justify-center gap-3">
+                                <button class="category-item px-5 py-2 rounded-full bg-primary text-white text-base font-medium transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">全部内容</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">前端开发</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">后端开发</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">开发工具</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">生活记录</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">学习笔记</button>
+                                <button class="category-item px-5 py-2 rounded-full bg-gray-100 dark:bg-dark-700 text-gray-800 dark:text-gray-100 text-base font-medium transition-all duration-300 transform hover:scale-105 hover:bg-primary/10 hover:shadow-md">开源项目</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 快速操作 -->
+                        <div class="flex justify-center gap-4 mt-4">
+                            <button id="view-all-posts" class="px-6 py-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors flex items-center gap-2">
+                                <i class="fas fa-file-alt"></i> 所有文章
+                            </button>
+                            <button id="view-all-projects" class="px-6 py-2 bg-secondary/10 text-secondary rounded-full hover:bg-secondary/20 transition-colors flex items-center gap-2">
+                                <i class="fas fa-code-branch"></i> 所有项目
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 内容过滤与排序 -->
+            <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
+                <h2 class="text-2xl font-bold gradient-text inline-block">最新内容</h2>
+                
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <select id="sort-select" class="appearance-none bg-white/80 dark:bg-dark-800/80 border border-gray-200 dark:border-dark-700 rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="latest">最新发布</option>
+                            <option value="popular">最受欢迎</option>
+                            <option value="commented">评论最多</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex border border-gray-200 dark:border-dark-700 rounded-lg overflow-hidden">
+                        <button id="grid-view" class="px-3 py-2 bg-primary text-white">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button id="list-view" class="px-3 py-2 bg-white/80 dark:bg-dark-800/80 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 内容展示区 -->
+            <div class="content-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 内容卡片将在这里动态显示 -->
+            </div>
+            
+            <!-- 加载更多按钮 -->
+            <div class="mt-10 text-center">
+                <!-- 加载更多按钮 -->
+                <button id="load-more" class="px-6 py-3 bg-gradient-to-r from-primary to-blue-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                    加载更多
+                </button>
+            </div>
+        </section>
+        
+        <!-- 页脚 -->
+        <footer class="bg-white/90 dark:bg-dark-900/90 backdrop-blur-sm py-8 mt-16">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-gray-600 dark:text-gray-400">
+                    ZhouYou © 2025 | 
+                    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">
+                        豫ICP备2407930208号-1
+                    </a>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- 发布文章模态框 -->
+    <div id="publish-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-publish-modal">&times;</span>
+            <h2 class="text-2xl font-bold mb-6">发布新文章</h2>
+            <form id="blog-form">
+                <div class="form-group">
+                    <label for="blog-title">文章标题</label>
+                    <input type="text" id="blog-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="blog-category">分类</label>
+                    <select id="blog-category" class="form-control">
+                        <option value="前端开发">前端开发</option>
+                        <option value="后端开发">后端开发</option>
+                        <option value="开发工具">开发工具</option>
+                        <option value="生活记录">生活记录</option>
+                        <option value="学习笔记">学习笔记</option>
+                        <option value="开源项目">开源项目</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="blog-tags">标签 (用逗号分隔)</label>
+                    <input type="text" id="blog-tags" class="form-control" placeholder="例如: JavaScript, React, 前端">
+                </div>
+                <div class="form-group">
+                    <label for="blog-content">文章内容</label>
+                    <textarea id="blog-content" class="form-control" rows="10" required></textarea>
+                </div>
+                <div class="form-actions flex justify-end gap-3">
+                    <button type="button" id="save-draft" class="px-4 py-2 bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-dark-600 transition-colors">
+                        保存草稿
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        发布文章
+                    </button>
+                </div>
+            </form>
+            <div class="draft-saved">草稿已保存</div>
+        </div>
+    </div>
+
+    <!-- 文章详情模态框 -->
+    <div id="blog-detail-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="blog-detail-content">
+                <!-- 文章详情将在这里动态显示 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript代码 -->
+    <script>
+        // 背景轮播功能
+        let currentBgSlide = 0;
+        const bgSlides = document.querySelectorAll('.bg-slide');
+        
+        function showBgSlide(index) {
+            bgSlides.forEach(slide => slide.classList.remove('active'));
+            bgSlides[index].classList.add('active');
+        }
+        
+        function nextBgSlide() {
+            currentBgSlide = (currentBgSlide + 1) % bgSlides.length;
+            showBgSlide(currentBgSlide);
+        }
+        
+        // 每10秒切换一次背景
+        setInterval(nextBgSlide, 10000);
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-scrolled');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+            }
+        });
+        
+        // 主题切换功能
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        // 检查本地存储的主题设置或系统偏好
+        const currentTheme = localStorage.getItem('theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // 应用初始主题
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+        }
+        
+        // 主题切换事件
+        themeToggle.addEventListener('click', function() {
+            html.classList.toggle('dark');
+            const theme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+        
+        // 移动端菜单功能
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 搜索功能
+        const searchToggle = document.getElementById('search-toggle');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchClose = document.getElementById('search-close');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('search-results');
+        
+        searchToggle.addEventListener('click', function() {
+            searchOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                searchOverlay.classList.remove('opacity-0');
+                searchOverlay.classList.add('opacity-100');
+                searchInput.focus();
+            }, 10);
+        });
+        
+        function closeSearch() {
+            searchOverlay.classList.remove('opacity-100');
+            searchOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                searchOverlay.classList.add('hidden');
+                searchInput.value = '';
+                searchResults.innerHTML = '<div class="text-gray-500 dark:text-gray-400 text-center py-6">输入关键词开始搜索</div>';
+            }, 300);
+        }
+        
+        searchClose.addEventListener('click', closeSearch);
+        
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        });
+        
+        // 博客文章管理功能
+        const publishBlogBtn = document.getElementById('publish-blog-btn');
+        const publishModal = document.getElementById('publish-modal');
+        const closePublishModal = document.querySelector('.close-publish-modal');
+        const blogForm = document.getElementById('blog-form');
+        const saveDraftBtn = document.getElementById('save-draft');
+        const draftSaved = document.querySelector('.draft-saved');
+        
+        // 打开发布文章模态框
+        publishBlogBtn.addEventListener('click', function() {
+            publishModal.classList.add('show');
+        });
+        
+        // 关闭发布文章模态框
+        closePublishModal.addEventListener('click', function() {
+            publishModal.classList.remove('show');
+        });
+        
+        // 保存草稿
+        saveDraftBtn.addEventListener('click', function() {
+            const blogData = getBlogFormData();
+            blogData.status = 'draft';
+            saveBlogToLocalStorage(blogData);
+            
+            // 显示草稿保存提示
+            draftSaved.classList.add('show');
+            setTimeout(() => {
+                draftSaved.classList.remove('show');
+            }, 2000);
+        });
+        
+        // 提交表单发布文章
+        blogForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const blogData = getBlogFormData();
+            blogData.status = 'published';
+            saveBlogToLocalStorage(blogData);
+            
+            // 添加文章到页面
+            addBlogCardToPage(blogData);
+            
+            // 关闭模态框并重置表单
+            publishModal.classList.remove('show');
+            blogForm.reset();
+        });
+        
+        // 获取表单数据
+        function getBlogFormData() {
+            const tags = document.getElementById('blog-tags').value.split(',').map(tag => tag.trim());
+            return {
+                id: Date.now().toString(),
+                title: document.getElementById('blog-title').value,
+                category: document.getElementById('blog-category').value,
+                tags: tags,
+                content: document.getElementById('blog-content').value,
+                date: new Date().toLocaleDateString('zh-CN'),
+                status: 'draft'
+            };
+        }
+        
+        // 保存文章到本地存储
+        function saveBlogToLocalStorage(blogData) {
+            let blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            blogs.push(blogData);
+            localStorage.setItem('blogs', JSON.stringify(blogs));
+        }
+        
+        // 从本地存储加载文章
+        function loadBlogsFromLocalStorage() {
+            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            const contentCards = document.querySelector('.content-cards');
+            contentCards.innerHTML = '';
+            
+            // 只显示已发布的文章
+            blogs.filter(blog => blog.status === 'published').forEach(blog => {
+                addBlogCardToPage(blog);
+            });
+        }
+        
+        // 添加文章卡片到页面
+        function addBlogCardToPage(blogData) {
+            const contentCards = document.querySelector('.content-cards');
+            
+            const tagsHtml = blogData.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            const blogCard = document.createElement('div');
+            blogCard.className = 'blog-card bg-white dark:bg-dark-800 rounded-lg shadow-md overflow-hidden card-hover';
+            blogCard.setAttribute('data-id', blogData.id);
+            
+            blogCard.innerHTML = `
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                            ${blogData.category}
+                        </span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm">
+                            ${blogData.date}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
+                        ${blogData.title}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                        ${blogData.content.substring(0, 100)}...
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${tagsHtml}
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button class="text-primary hover:underline font-medium read-more-btn">
+                            阅读更多
+                        </button>
+                        <div class="blog-card-actions">
+                            <button class="blog-btn edit-btn" title="编辑文章">
+                                <i class="fas fa-edit"></i>
+                                <span class="btn-text">编辑</span>
+                            </button>
+                            <button class="blog-btn delete-btn" title="删除文章">
+                                <i class="fas fa-trash"></i>
+                                <span class="btn-text">删除</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 添加到页面开头
+            contentCards.insertBefore(blogCard, contentCards.firstChild);
+            
+            // 添加事件监听器
+            setupNewBlogCardEvents(blogData.id);
+        }
+        
+        // 为新文章卡片设置事件监听器
+        function setupNewBlogCardEvents(blogId) {
+            const blogCard = document.querySelector(`[data-id="${blogId}"]`);
+            const readMoreBtn = blogCard.querySelector('.read-more-btn');
+            const editBtn = blogCard.querySelector('.edit-btn');
+            const deleteBtn = blogCard.querySelector('.delete-btn');
+            
+            // 阅读更多按钮
+            readMoreBtn.addEventListener('click', function() {
+                displayBlogPost(blogId);
+            });
+            
+            // 编辑按钮
+            editBtn.addEventListener('click', function() {
+                editBlogPost(blogId);
+            });
+            
+            // 删除按钮
+            deleteBtn.addEventListener('click', function() {
+                deleteBlogPost(blogId);
+            });
+        }
+        
+        // 显示文章详情
+        function displayBlogPost(blogId) {
+            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            const blog = blogs.find(b => b.id === blogId);
+            
+            if (!blog) return;
+            
+            const blogDetailModal = document.getElementById('blog-detail-modal');
+            const blogDetailContent = document.getElementById('blog-detail-content');
+            
+            const tagsHtml = blog.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            blogDetailContent.innerHTML = `
+                <div class="blog-post">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
+                            ${blog.category}
+                        </span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm">
+                            ${blog.date}
+                        </span>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+                        ${blog.title}
+                    </h2>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${tagsHtml}
+                    </div>
+                    <div class="prose dark:prose-invert max-w-none">
+                        <p>${blog.content.replace(/\n/g, '<br>')}</p>
+                    </div>
+                </div>
+            `;
+            
+            blogDetailModal.classList.add('show');
+        }
+        
+        // 编辑文章
+        function editBlogPost(blogId) {
+            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            const blog = blogs.find(b => b.id === blogId);
+            
+            if (!blog) return;
+            
+            // 填充表单
+            document.getElementById('blog-title').value = blog.title;
+            document.getElementById('blog-category').value = blog.category;
+            document.getElementById('blog-tags').value = blog.tags.join(', ');
+            document.getElementById('blog-content').value = blog.content;
+            
+            // 打开模态框
+            publishModal.classList.add('show');
+            
+            // 修改提交按钮行为为更新
+            blogForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // 更新文章数据
+                const updatedBlog = getBlogFormData();
+                updatedBlog.id = blogId;
+                updatedBlog.date = blog.date; // 保持原始日期
+                
+                // 更新本地存储
+                const blogIndex = blogs.findIndex(b => b.id === blogId);
+                blogs[blogIndex] = updatedBlog;
+                localStorage.setItem('blogs', JSON.stringify(blogs));
+                
+                // 更新页面上的文章卡片
+                updateBlogCardOnPage(blogId, updatedBlog);
+                
+                // 关闭模态框并重置表单
+                publishModal.classList.remove('show');
+                blogForm.reset();
+                
+                // 恢复原始提交行为
+                blogForm.onsubmit = arguments.callee.caller;
+            };
+        }
+        
+        // 更新页面上的文章卡片
+        function updateBlogCardOnPage(blogId, updatedBlog) {
+            const blogCard = document.querySelector(`[data-id="${blogId}"]`);
+            
+            if (!blogCard) return;
+            
+            const tagsHtml = updatedBlog.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            blogCard.querySelector('h3').textContent = updatedBlog.title;
+            blogCard.querySelector('p').textContent = updatedBlog.content.substring(0, 100) + '...';
+            blogCard.querySelector('.flex.flex-wrap.gap-2.mb-4').innerHTML = tagsHtml;
+        }
+        
+        // 删除文章
+        function deleteBlogPost(blogId) {
+            if (confirm('确定要删除这篇文章吗？')) {
+                // 从本地存储中删除
+                let blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+                blogs = blogs.filter(b => b.id !== blogId);
+                localStorage.setItem('blogs', JSON.stringify(blogs));
+                
+                // 从页面上删除
+                const blogCard = document.querySelector(`[data-id="${blogId}"]`);
+                blogCard.remove();
+            }
+        }
+        
+        // 关闭文章详情模态框
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('blog-detail-modal').classList.remove('show');
+        });
+        
+        // 分类过滤功能
+        const categoryButtons = document.querySelectorAll('.category-item');
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 更新按钮状态
+                categoryButtons.forEach(btn => {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-gray-100', 'dark:bg-dark-700', 'text-gray-800', 'dark:text-gray-100');
+                });
+                
+                this.classList.remove('bg-gray-100', 'dark:bg-dark-700', 'text-gray-800', 'dark:text-gray-100');
+                this.classList.add('bg-primary', 'text-white');
+                
+                // 过滤文章
+                const category = this.textContent.trim();
+                filterBlogPosts(category);
+            });
+        });
+        
+        // 过滤文章
+        function filterBlogPosts(category) {
+            const blogCards = document.querySelectorAll('.blog-card');
+            
+            blogCards.forEach(card => {
+                if (category === '全部内容') {
+                    card.style.display = 'block';
+                } else {
+                    const cardCategory = card.querySelector('.inline-block.px-3.py-1').textContent.trim();
+                    if (cardCategory === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // 搜索功能
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            
+            if (!query) {
+                searchResults.innerHTML = '<div class="text-gray-500 dark:text-gray-400 text-center py-6">输入关键词开始搜索</div>';
+                return;
+            }
+            
+            performBlogSearch(query);
+        });
+        
+        // 执行博客搜索
+        function performBlogSearch(query) {
+            const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+            const filteredBlogs = blogs.filter(blog => 
+                blog.status === 'published' && (
+                    blog.title.toLowerCase().includes(query) ||
+                    blog.content.toLowerCase().includes(query) ||
+                    blog.category.toLowerCase().includes(query) ||
+                    blog.tags.some(tag => tag.toLowerCase().includes(query))
+                )
+            );
+            
+            if (filteredBlogs.length === 0) {
+                searchResults.innerHTML = '<div class="text-gray-500 dark:text-gray-400 text-center py-6">没有找到相关文章</div>';
+                return;
+            }
+            
+            let resultsHtml = '<div class="space-y-3">';
+            
+            filteredBlogs.forEach(blog => {
+                resultsHtml += `
+                    <div class="p-3 bg-gray-50 dark:bg-dark-700 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-600 transition-colors cursor-pointer search-result" data-id="${blog.id}">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-medium text-gray-800 dark:text-gray-100">${highlightSearchText(blog.title, query)}</h4>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${blog.date}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">${highlightSearchText(blog.content.substring(0, 100), query)}...</p>
+                        <div class="flex gap-2 mt-2">
+                            <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">${blog.category}</span>
+                            ${blog.tags.slice(0, 2).map(tag => `<span class="text-xs px-2 py-1 bg-gray-200 dark:bg-dark-600 text-gray-600 dark:text-gray-300 rounded-full">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsHtml += '</div>';
+            searchResults.innerHTML = resultsHtml;
+            
+            // 为搜索结果添加点击事件
+            document.querySelectorAll('.search-result').forEach(result => {
+                result.addEventListener('click', function() {
+                    const blogId = this.getAttribute('data-id');
+                    closeSearch();
+                    displayBlogPost(blogId);
+                });
+            });
+        }
+        
+        // 高亮搜索文本
+        function highlightSearchText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>');
+        }
+        
+        // 视图切换功能
+        const gridViewBtn = document.getElementById('grid-view');
+        const listViewBtn = document.getElementById('list-view');
+        const contentCards = document.querySelector('.content-cards');
+        
+        gridViewBtn.addEventListener('click', function() {
+            contentCards.classList.remove('list-view');
+            contentCards.classList.add('grid-view');
+            
+            this.classList.add('bg-primary', 'text-white');
+            this.classList.remove('bg-white/80', 'dark:bg-dark-800/80');
+            
+            listViewBtn.classList.remove('bg-primary', 'text-white');
+            listViewBtn.classList.add('bg-white/80', 'dark:bg-dark-800/80');
+        });
+        
+        listViewBtn.addEventListener('click', function() {
+            contentCards.classList.remove('grid-view');
+            contentCards.classList.add('list-view');
+            
+            this.classList.add('bg-primary', 'text-white');
+            this.classList.remove('bg-white/80', 'dark:bg-dark-800/80');
+            
+            gridViewBtn.classList.remove('bg-primary', 'text-white');
+            gridViewBtn.classList.add('bg-white/80', 'dark:bg-dark-800/80');
+        });
+        
+        // 添加列表视图样式
+        const listStyle = document.createElement('style');
+        listStyle.textContent = `
+            .list-view {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .list-view .blog-card {
+                display: flex;
+                align-items: center;
+            }
+            
+            .list-view .blog-card .p-6 {
+                flex: 1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .list-view .blog-card .blog-card-actions {
+                position: static;
+                opacity: 1;
+                transform: none;
+            }
+        `;
+        document.head.appendChild(listStyle);
+        
+        // 排序功能
+        const sortSelect = document.getElementById('sort-select');
+        
+        sortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            sortBlogPosts(sortBy);
+        });
+        
+        // 排序文章
+        function sortBlogPosts(sortBy) {
+            const blogCards = Array.from(document.querySelectorAll('.blog-card'));
+            const contentCards = document.querySelector('.content-cards');
+            
+            blogCards.sort((a, b) => {
+                if (sortBy === 'latest') {
+                    // 按日期排序，最新的在前
+                    const dateA = a.querySelector('.text-gray-500.dark\:text-gray-400.text-sm').textContent;
+                    const dateB = b.querySelector('.text-gray-500.dark\:text-gray-400.text-sm').textContent;
+                    return new Date(dateB) - new Date(dateA);
+                } else if (sortBy === 'popular') {
+                    // 这里可以根据实际需求添加排序逻辑，比如按浏览量
+                    return 0;
+                } else if (sortBy === 'commented') {
+                    // 这里可以根据实际需求添加排序逻辑，比如按评论数
+                    return 0;
+                }
+            });
+            
+            // 重新排列DOM元素
+            blogCards.forEach(card => {
+                contentCards.appendChild(card);
+            });
+        }
+        
+        // 加载图标数据
+        async function loadSocialIcons() {
+            try {
+                const response = await fetch('./admin/icons.json');
+                const icons = await response.json();
+                
+                const socialIconsContainer = document.getElementById('social-icons');
+                socialIconsContainer.innerHTML = '';
+                
+                // 按sort_order排序
+                icons.sort((a, b) => a.sort_order - b.sort_order);
+                
+                icons.forEach(icon => {
+                    const iconElement = document.createElement('a');
+                    iconElement.href = icon.url;
+                    iconElement.className = 'w-10 h-10 rounded-full bg-white/20 backdrop-blur hover:bg-white/30 transition-all duration-300 flex items-center justify-center text-white hover:scale-110';
+                    
+                    // 如果是微信收款码，添加特殊处理
+                    if (icon.name === '捐赠') {
+                        iconElement.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            // 创建模态框显示收款码
+                            const modal = document.createElement('div');
+                            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+                            modal.innerHTML = `
+                                <div class="bg-white rounded-lg p-4 max-w-md mx-4">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="text-lg font-bold">微信收款码</h3>
+                                        <button class="text-gray-500 hover:text-gray-700" onclick="this.closest('.fixed').remove()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <img src="${icon.url}" alt="微信收款码" class="w-full rounded">
+                                </div>
+                            `;
+                            document.body.appendChild(modal);
+                        });
+                    }
+                    
+                    const iconInner = document.createElement('i');
+                    iconInner.className = icon.icon_class;
+                    
+                    iconElement.appendChild(iconInner);
+                    socialIconsContainer.appendChild(iconElement);
+                });
+            } catch (error) {
+                console.error('加载图标数据失败:', error);
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载社交图标
+            loadSocialIcons();
+            
+            // 从本地存储加载文章
+            loadBlogsFromLocalStorage();
+            
+            // 如果没有文章，显示示例文章
+            if (document.querySelectorAll('.blog-card').length === 0) {
+                loadSampleBlogs();
+            }
+        });
+        
+        // 加载示例文章
+        function loadSampleBlogs() {
+            const sampleBlogs = [
+                {
+                    id: '1',
+                    title: 'JavaScript ES6+ 新特性详解',
+                    category: '前端开发',
+                    tags: ['JavaScript', 'ES6', '前端'],
+                    content: 'ES6（ECMAScript 2015）及其后续版本为JavaScript带来了许多强大的新特性，包括箭头函数、解构赋值、模板字符串、Promise、async/await等。这些特性大大提高了JavaScript代码的可读性和开发效率。本文将详细介绍这些新特性的使用方法和最佳实践。',
+                    date: '2025/1/15',
+                    status: 'published'
+                },
+                {
+                    id: '2',
+                    title: 'React Hooks 实战指南',
+                    category: '前端开发',
+                    tags: ['React', 'Hooks', '前端框架'],
+                    content: 'React Hooks 是React 16.8版本引入的新特性，它允许你在不编写class的情况下使用state以及其他的React特性。本文将介绍useState、useEffect、useContext等常用Hooks的使用方法，并通过实际案例展示如何使用Hooks构建复杂的React应用。',
+                    date: '2025/1/10',
+                    status: 'published'
+                },
+                {
+                    id: '3',
+                    title: 'Node.js 性能优化技巧',
+                    category: '后端开发',
+                    tags: ['Node.js', '性能优化', '后端'],
+                    content: 'Node.js作为流行的JavaScript运行时，在构建高性能Web应用方面表现出色。然而，随着应用规模的增长，性能优化变得尤为重要。本文将介绍一些实用的Node.js性能优化技巧，包括内存管理、异步编程优化、集群模式等，帮助你构建更高效的Node.js应用。',
+                    date: '2025/1/5',
+                    status: 'published'
+                }
+            ];
+            
+            sampleBlogs.forEach(blog => {
+                saveBlogToLocalStorage(blog);
+                addBlogCardToPage(blog);
+            });
+        }
+    </script>
+</body>
+</html>
